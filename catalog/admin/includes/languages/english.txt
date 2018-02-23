@@ -1,0 +1,7 @@
+// Nochex APC
+define('TEXT_DISPLAY_NUMBER_OF_NOCHEX_APC_TRANSACTIONS', 'Displaying <b>%d</b> to <b>%d</b> (of <b>%d</b> transactions)');
+define('BOX_HEADING_NOCHEX_APC_ADMIN', 'Nochex APC');
+define('BOX_NOCHEX_APC_ADMIN_TRANSACTIONS', 'Transactions'); 
+
+*** NOTE ***
+If you have the Nochex_APC osCommerce Community module installed you will already have made this change.

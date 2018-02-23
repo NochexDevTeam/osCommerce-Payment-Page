@@ -1,0 +1,35 @@
+You should search for ALL ocurrencies of NAVBAR_TITLE_2, HEADING_TITLE, TEXT_SUCCESS and add an $ at the start.
+
+ie:
+$breadcrumb->add(NAVBAR_TITLE_2);
+becomes:
+$breadcrumb->add($NAVBAR_TITLE_2);
+
+Then, you should paste this block of code BEFORE the $breadcrumb
+
+
+  $nochex_query = tep_db_query("select o.orders_status,p.* from " . TABLE_ORDERS . " o LEFT JOIN " . TABLE_NOCHEX_APC_TXN . " p on p.nc_order_id = o.orders_id AND o.customers_id = '" . (int)$customer_id . "' order by o.date_purchased desc limit 1");
+  $nochex_apc = tep_db_fetch_array($nochex_query);
+
+  if ($nochex_apc['nochex_reponse']=='AUTHORISED') {
+      $NAVBAR_TITLE_2 = NOCHEX_NAVBAR_TITLE_2_OK;
+      $HEADING_TITLE = NOCHEX_HEADING_TITLE_OK; 
+      $TEXT_SUCCESS = NOCHEX_TEXT_SUCCESS_OK; 
+    $cart->reset(TRUE); 
+  } else if ($nochex_apc['nochex_response']=='DECLINED') { 
+    $NAVBAR_TITLE_2 = NOCHEX_NAVBAR_TITLE_2_FAILED; 
+    $HEADING_TITLE = NOCHEX_HEADING_TITLE_FAILED; 
+    $TEXT_SUCCESS = NOCHEX_TEXT_SUCCESS_FAILED; 
+  } else if ($nochex_apc['orders_status']==50000) { 
+      $NAVBAR_TITLE_2 = NOCHEX_NAVBAR_TITLE_2_PENDING; 
+      $HEADING_TITLE = NOCHEX_HEADING_TITLE_PENDING; 
+      $TEXT_SUCCESS = NOCHEX_TEXT_SUCCESS_PENDING; 
+  } else { 
+    $NAVBAR_TITLE_2 = NAVBAR_TITLE_2; 
+    $HEADING_TITLE = HEADING_TITLE; 
+    $TEXT_SUCCESS = TEXT_SUCCESS; 
+  };
+
+
+*** NOTE ***
+If you have the Nochex_APC osCommerce Community module installed you will already have made this change.
