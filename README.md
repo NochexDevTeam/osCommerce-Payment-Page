@@ -15,7 +15,7 @@ Changelog
 
 = 2 =
   
-  * Updated the Nochex module to simplify setup and no core osCommerce files to update.
+  * Updated Nochex module to simplify setup and no core osCommerce files to update.
   
 = 1.1 =  
 
