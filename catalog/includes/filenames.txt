@@ -1,4 +1,0 @@
-  define('FILENAME_CHECKOUT_NOCHEX_APC', 'checkout_nochex.php'); // Nochex APC
-
-*** NOTE ***
-If you have the Nochex_APC osCommerce Community module installed you will already have made this change.

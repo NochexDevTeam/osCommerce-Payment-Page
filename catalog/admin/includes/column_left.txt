@@ -1,5 +1,0 @@
-// Add this at the end
-  require(DIR_WS_BOXES . 'nochex_apc.php'); // Nochex APC
-
-*** NOTE ***
-If you have the Nochex_APC osCommerce Community module installed you will already have made this change.

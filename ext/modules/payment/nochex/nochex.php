@@ -1,8 +1,3 @@
-
-Editing:  
-/home/nochexdev/public_html/osCommerce/oscommerce-2.3.4/catalog/checkout_nochex.php
- Encoding:    Re-open Use Code Editor     Close  Save Changes
-
 <?php
 /*
 	osCommerce, Open Source E-Commerce Solutions
@@ -12,7 +7,7 @@ Editing:
 	Copyright © Entrepreneuria Limited 2006
 	Released under the GNU General Public License
 */
-
+	chdir('../../../../');
 	require('includes/application_top.php');
 
 // if the customer is not logged on, redirect them to the login page
@@ -240,24 +235,21 @@ $prodDetails = "";
 	
 	}
 	
-		// Attaches the products and xml details to a variable.
+	// Attaches the products and xml details to a variable.
 		$details = "Product details before loop:". $products_ordered ." Product details after loop and put in xml: ". $xml_collect;
-		// Writes the details to the nochex_debug.txt file
+	// Writes the details to the nochex_debug.txt file
 		writeDebug($details);
-// load the after_process function from the payment modules
-	$payment_modules->after_process();
+	// load the after_process function from the payment modules
+		$payment_modules->after_process();
 
-// unregister session variables used during checkout
+	// unregister session variables used during checkout
 	tep_session_unregister('sendto');
 	tep_session_unregister('billto');
 	tep_session_unregister('shipping');
 	tep_session_unregister('payment');
-	tep_session_unregister('comments');
+	tep_session_unregister('comments'); 
 
-
-	$nochex_currency = $order->info['currency'];
-	
-
+	$nochex_currency = $order->info['currency']; 
 	$nochex_order_amount = $order->info['total'];
 
 	$nochex_order_amount = number_format($nochex_order_amount * $currencies->get_value($nochex_currency), 2);
@@ -266,97 +258,100 @@ $prodDetails = "";
 	// Show postage amount on Nochex paymeent page, if enabled in the admin section
 	if(MODULE_PAYMENT_NOCHEX_APC_POSTAGE == 'On'){
 	
-	// Amount
-	$amount = number_format(($order->info['total'] - $order->info['shipping_cost']) * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
-	// Delivery Costs
-    $postage = number_format($order->info['shipping_cost'] * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
+		// Amount
+		$amount = number_format(($order->info['total'] - $order->info['shipping_cost']) * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
+		// Delivery Costs
+		$postage = number_format($order->info['shipping_cost'] * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
 	
 	}else{
 	
-	$amount = number_format(($order->info['total']) * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
-	
-	$postage = '';
+		$amount = number_format(($order->info['total']) * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);	
+		$postage = '';
 	
 	}
 	
-	// Compile the query string to send to Nochex payments page
-	
+			// Compile the query string to send to Nochex payments page 
 			if(MODULE_PAYMENT_NOCHEX_APC_BILLING == 'On'){
-			$hideBilling = 1;
+				$hideBilling = 1;
 			}else{
-			$hideBilling = 0;
+				$hideBilling = 0;
 			}
+			
 			// Delivery Name and Address
 			$delivery_fullname = $order->delivery['firstname'] . ' ' . $order->delivery['lastname'];
 			$delivery_address = array();
 			if(strlen($order->delivery['street_address'])>0) $delivery_address[] = $order->delivery['street_address'];
 			if(strlen($order->delivery['suburb'])>0) $delivery_address[] = $order->delivery['suburb'];		
 			if(strlen($order->delivery['city'])>0) $delivery_city = $order->delivery['city'];
+			$delivery_country = $order->delivery["country"]["iso_code_2"];
 			$delivery_postcode = $order->delivery['postcode'];
 			
 			$merchant_id = MODULE_PAYMENT_NOCHEX_APC_EMAIL;
 			
-// variables about the order are saved into a variable called $details.
-$details = "Variables being attached to the form variables: Merchant ID: " . $merchant_id . ", \n Amount: ". $amount . ", \n Postage: " . $postage . ", \n Order_ID: " . $insert_id . ", \n Xml Item Collection: " . $xml_collect . ", \n Billing Fullname: " . 
-$billing_fullname . ", \n Billing Address: " . $billing_address . ", \n Billing Postcode: " . $billing_postcode . ", \n Delivery Fullname: " . $delivery_fullname . ", \n Delivery Address: " . $delivery_address . ", \n Delivery Postcode: " . $delivery_postcode . ", \n Customer Email Address: " . $order->customer['email_address'] . ", \n Billing Phone Number: ". $billing_phoneNumber . ", \n Test Mode: " . MODULE_PAYMENT_NOCHEX_APC_TESTMODE . ".";
-//Calls a function writeDebug, which passes the $details variable to be written to nochex_debug.txt
-writeDebug($details);
-// variables about the configuration are saved into a variable
-$configurationDetails = "Nochex APC Email: ". MODULE_PAYMENT_NOCHEX_APC_EMAIL .", Test Mode: ". MODULE_PAYMENT_NOCHEX_APC_TESTMODE .", Hide Billing Details: ". MODULE_PAYMENT_NOCHEX_APC_BILLING .", Debugging Mode: ". MODULE_PAYMENT_NOCHEX_APC_DEBUGGING .". ";
-//Calls a function writeDebug, which passes the configuration details variable to be written to nochex_debug.txt
-writeDebug($configurationDetails);
-//Calls a function writeDebug, which passes the $params variable to be written to nochex_debug.txt
-writeDebug($params);
-			// Parameters to be sent to Nochex.
+	// variables about the order are saved into a variable called $details.
+	$details = "Variables being attached to the form variables: Merchant ID: " . $merchant_id . ", \n Amount: ". $amount . ", \n Postage: " . $postage . ", \n Order_ID: " . $insert_id . ", \n Xml Item Collection: " . $xml_collect . ", \n Billing Fullname: " . 
+	$billing_fullname . ", \n Billing Address: " . $billing_address . ", \n Billing Postcode: " . $billing_postcode . ", \n Delivery Fullname: " . $delivery_fullname . ", \n Delivery Address: " . $delivery_address . ", \n Delivery Postcode: " . $delivery_postcode . ", \n Customer Email Address: " . $order->customer['email_address'] . ", \n Billing Phone Number: ". $billing_phoneNumber . ", \n Test Mode: " . MODULE_PAYMENT_NOCHEX_APC_TESTMODE . ".";
+	//Calls a function writeDebug, which passes the $details variable to be written to nochex_debug.txt
+	writeDebug($details);
+	// variables about the configuration are saved into a variable
+	$configurationDetails = "Nochex APC Email: ". MODULE_PAYMENT_NOCHEX_APC_EMAIL .", Test Mode: ". MODULE_PAYMENT_NOCHEX_APC_TESTMODE .", Hide Billing Details: ". MODULE_PAYMENT_NOCHEX_APC_BILLING .", Debugging Mode: ". MODULE_PAYMENT_NOCHEX_APC_DEBUGGING .". ";
+	//Calls a function writeDebug, which passes the configuration details variable to be written to nochex_debug.txt
+	writeDebug($configurationDetails);
+	//Calls a function writeDebug, which passes the $params variable to be written to nochex_debug.txt
+	writeDebug($params);
+	// Parameters to be sent to Nochex.
 
-		
 	///*--- Function, write to a text file ---*/
 	//// Function that will be called when particular information needs to be written to a nochex_debug file.
 	function writeDebug($DebugData){
-	//	// Receives and stores the Date and Time
+	// Receives and stores the Date and Time
 	$debug_TimeDate = date("m/d/Y h:i:s a", time());
-	//	// Puts together, Date and Time, as well as information in regards to information that has been received.
+	// Puts together, Date and Time, as well as information in regards to information that has been received.
 	$stringData = "\n\n Time and Date: " . $debug_TimeDate . "... " . $DebugData ."... ";
-	//	 // Try - Catch in case any errors occur when writing to nochex_debug file.
-	try
-	{
-	//		// Variable with the name of the debug file.
-	$debugging = "nochex_debug.txt";
-	//		// variable which will open the nochex_debug file, or if it cannot open then an error message will be made.
-	$f = fopen($debugging, 'a') or die("File can't open");
-	//		// Open and write data to the nochex_debug file.
-	$ret = fwrite($f, $stringData);
-	//		// Incase there is no data being shown or written then an error will be produced.
-	if ($ret === false)die("Fwrite failed");
-	//		Closes the open file.
-	fclose($f)or die("File not close");	
-	} 
-	//If a problem or something doesn't work, then catch will produce an email which will send an error message.
+	// Try - Catch in case any errors occur when writing to nochex_debug file.
+		try
+		{
+			// Variable with the name of the debug file.
+			$debugging = "nochex_debug.txt";
+			// variable which will open the nochex_debug file, or if it cannot open then an error message will be made.
+			$f = fopen($debugging, 'a') or die("File can't open");
+			// Open and write data to the nochex_debug file.
+			$ret = fwrite($f, $stringData);
+			// Incase there is no data being shown or written then an error will be produced.
+			
+		if ($ret === false)die("Fwrite failed");
+			// Closes the open file.
+			fclose($f)or die("File not close");	
+		} 
+		//If a problem or something doesn't work, then catch will produce an email which will send an error message.
 		catch(Exception $e)
 		{
 			mail($this->email, "Debug Check Error Message", $e->getMessage());
 		}
-	}
-	
+	} 
 
-			// If Test mode is activated
-			
+			// If Test mode is activated 
 			if(MODULE_PAYMENT_NOCHEX_APC_TESTMODE=="Test"){
 				$testTran = "100";
 			}	else {
 				$testTran = "0";
 			}
 
-	                $billing_phoneNumber= $order->customer['telephone'];
+	        $billing_phoneNumber= $order->customer['telephone'];
 			$billing_fullname = $order->billing['firstname'] . ' ' . $order->billing['lastname'];			
 			$billing_address = array();
 
 			if(strlen($order->billing['street_address'])>0) $billing_address[] = $order->billing['street_address'];
 			if(strlen($order->billing['suburb'])>0) $billing_address[] = $order->billing['suburb'];
 			if(strlen($order->billing['city'])>0) $billing_city = $order->billing['city'];
+			
+			$billing_country = $order->billing["country"]["iso_code_2"];
 			$billing_postcode = $order->billing['postcode'];	
-	
-	echo '<noscript><p>Please enable JavaScript in your browser, and press the button below to continue.</p></noscript><form action="https://secure.nochex.com/default.aspx" method="post" id="nochex_payment_form" name="nochex_payment_form">				
+			
+			$cart->reset(true);
+			
+	echo '<noscript><p>Please enable JavaScript in your browser, and press the button below to continue.</p></noscript>
+	<form action="https://secure.nochex.com/default.aspx" method="post" id="nochex_payment_form" name="nochex_payment_form">				
 	<input type="hidden" name="merchant_id" value="'.$merchant_id.'" />				
 	<input type="hidden" name="amount" value="'.$amount.'" />				
 	<input type="hidden" name="Postage" value="'.$postage.'" />			
@@ -375,17 +370,16 @@ writeDebug($params);
 	<input type="hidden" name="customer_phone_number" value="'.$billing_phoneNumber.'" />				
 	<input type="hidden" name="success_url" value="'.tep_href_link(FILENAME_CHECKOUT_SUCCESS, '', 'SSL').'" />				
 	<input type="hidden" name="hide_billing_details" value="'.$hideBilling.'" />				
-	<input type="hidden" name="callback_url" value="'.tep_href_link('nochex_apc_handler.php', '', 'SSL').'" />				
+	<input type="hidden" name="callback_url" value="'.tep_href_link('ext/modules/payment/nochex/nochex_apc_handler.php', '', 'SSL').'" />				
 	<input type="hidden" name="cancel_url" value="'.tep_href_link('checkout_shipping.php', '', 'SSL').'" />				
 	<input type="hidden" name="test_success_url" value="'.tep_href_link(FILENAME_CHECKOUT_SUCCESS, '', 'SSL').'" />				
 	<input type="hidden" name="test_transaction" value="'.$testTran.'" />				
 	<input type="submit" class="button-alt" id="submit_nochex_payment_form" value="Pay via Nochex" /> 				
-	</form>
-			
-			<script type="text/javascript">
- window.onload=function(){			
-document.nochex_payment_form.submit();
-}
-			</script>';
+	</form> 
+	<script type="text/javascript">
+	window.onload=function(){			
+	document.nochex_payment_form.submit();
+	}
+	</script>';
 		
 ?>
