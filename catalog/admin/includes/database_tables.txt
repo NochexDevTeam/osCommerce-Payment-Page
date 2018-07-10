@@ -1,5 +1,0 @@
-  define('TABLE_NOCHEX_APC_TXN', 'nochex_apc_transactions'); // Nochex APC
-
-*** NOTE ***
-If you have the Nochex_APC osCommerce Community module installed you will already have made a similar change.
-Please locate your existing entry for 'TABLE_NOCHEX_APC_TXN' and update it to the above.
