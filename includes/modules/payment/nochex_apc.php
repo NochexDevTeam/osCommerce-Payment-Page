@@ -3,7 +3,7 @@
 	osCommerce, Open Source E-Commerce Solutions
 	http://www.oscommerce.com
 
-	Nochex APC v0.1.1
+	Nochex APC v2.2
 	Copyright © Nochex
 	Released under the GNU General Public License
 */
@@ -30,7 +30,7 @@
 			$this->xmlcoll = ((MODULE_PAYMENT_NOCHEX_APC_XML == 'ON') ? true : false);
 			$this->postage = ((MODULE_PAYMENT_NOCHEX_APC_POSTAGE == 'ON') ? true : false);
 			$this->debugging = ((MODULE_PAYMENT_NOCHEX_APC_DEBUGGING == 'OFF') ? true : false);						
-			$this->callback = ((MODULE_PAYMENT_NOCHEX_APC_CALLBACK == 'OFF') ? true : false);
+
 			
 		if ((int)MODULE_PAYMENT_NOCHEX_APC_ORDER_STATUS_ID > 0) {
 			$this->order_status = MODULE_PAYMENT_NOCHEX_APC_ORDER_STATUS_ID;
@@ -135,7 +135,6 @@
 			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Detailed Product Information', 'MODULE_PAYMENT_NOCHEX_APC_XML', 'OFF', 'Display your product details in a structured format on your Nochex Payment Page.', '6', '6', 'tep_cfg_select_option(array(\'On\', \'Off\'), ', now())");
 			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Show Postage', 'MODULE_PAYMENT_NOCHEX_APC_POSTAGE', 'OFF', 'Postage Option is to separate the postage from the total amount', '6', '6', 'tep_cfg_select_option(array(\'On\', \'Off\'), ', now())");
 			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Debugging Mode', 'MODULE_PAYMENT_NOCHEX_APC_DEBUGGING', 'OFF', 'Debug mode is to test and make sure the module is working correctly, and if there is any faults being caused in your Nochex module.', '6', '6', 'tep_cfg_select_option(array(\'On\', \'Off\'), ', now())");						
-			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Callback', 'MODULE_PAYMENT_NOCHEX_APC_CALLBACK', 'OFF', 'To use the callback functionality, please contact Nochex Support to enable this functionality on your merchant account otherwise this function wont work.', '6', '6', 'tep_cfg_select_option(array(\'On\', \'Off\'), ', now())");
 			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, use_function, date_added) values ('Set Order Declined Status', 'MODULE_PAYMENT_NOCHEX_APC_ORDER_CANCEL_STATUS_ID', '50002', 'APC sets the status of declined orders to this value', '6', '0', 'tep_cfg_pull_down_order_statuses(', 'tep_get_order_status_name', now())");
 			tep_db_query("insert into " . TABLE_CONFIGURATION . " (configuration_title, configuration_key, configuration_value, configuration_description, configuration_group_id, sort_order, set_function, date_added) values ('Update Stock Before Payment', 'MODULE_PAYMENT_NOCHEX_APC_UPDATE_STOCK_BEFORE_PAYMENT','False', 'Should products stock be updated even when the payment is not yet COMPLETED?', '6', '6', 'tep_cfg_select_option(array(\'True\', \'False\'), ', now())");
 		}
@@ -157,8 +156,7 @@
 				'MODULE_PAYMENT_NOCHEX_APC_BILLING',
 				'MODULE_PAYMENT_NOCHEX_APC_XML',
 				'MODULE_PAYMENT_NOCHEX_APC_POSTAGE',
-				'MODULE_PAYMENT_NOCHEX_APC_DEBUGGING',
-				'MODULE_PAYMENT_NOCHEX_APC_CALLBACK'
+				'MODULE_PAYMENT_NOCHEX_APC_DEBUGGING'
 			);
 			return $module_keys;
 		}
