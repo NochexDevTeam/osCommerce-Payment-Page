@@ -13,6 +13,10 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 2.2 =
+
+  - Updated Callback feature and functionality
+
 = 2 =
   
   * Updated Nochex module to simplify setup and no core osCommerce files to update.
