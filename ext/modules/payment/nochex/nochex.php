@@ -3,8 +3,8 @@
 	osCommerce, Open Source E-Commerce Solutions
 	http://www.oscommerce.com
 
-	Nochex APC Plugin v0.1.1
-	Copyright © Entrepreneuria Limited 2006
+	Nochex APC Plugin v2.2
+	Copyright ï¿½ Entrepreneuria Limited 2006
 	Released under the GNU General Public License
 */
 	chdir('../../../../');
@@ -373,7 +373,8 @@ $prodDetails = "";
 	<input type="hidden" name="callback_url" value="'.tep_href_link('ext/modules/payment/nochex/nochex_apc_handler.php', '', 'SSL').'" />				
 	<input type="hidden" name="cancel_url" value="'.tep_href_link('checkout_shipping.php', '', 'SSL').'" />				
 	<input type="hidden" name="test_success_url" value="'.tep_href_link(FILENAME_CHECKOUT_SUCCESS, '', 'SSL').'" />				
-	<input type="hidden" name="test_transaction" value="'.$testTran.'" />				
+	<input type="hidden" name="test_transaction" value="'.$testTran.'" />		
+	<input type="hidden" name="optional_1" value="enabled" />			
 	<input type="submit" class="button-alt" id="submit_nochex_payment_form" value="Pay via Nochex" /> 				
 	</form> 
 	<script type="text/javascript">
