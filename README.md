@@ -13,6 +13,10 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 2.3 =
+
+  - Samll change to APC page
+
 = 2.2 =
 
   - Updated Callback feature and functionality
