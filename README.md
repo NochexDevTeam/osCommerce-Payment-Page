@@ -13,9 +13,14 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 3.0 =
+
+  - Module updated in relation to the latest version of osCommerce
+  - Additional Checks in APC and callback functions to check paid / order totals
+    
 = 2.3 =
 
-  - Samll change to APC page
+  - Small change to APC page
 
 = 2.2 =
 
