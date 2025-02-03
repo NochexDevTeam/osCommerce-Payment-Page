@@ -13,6 +13,10 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 3.0 =
+
+  - Module updated in relation to the latest version of osCommerce
+    
 = 2.3 =
 
   - Samll change to APC page
