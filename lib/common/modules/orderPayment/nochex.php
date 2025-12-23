@@ -6,7 +6,7 @@
 *  @license http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
 *  Plugin Name: Nochex Payment Gateway for Oscommerce v4
 *  Description: Accept Nochex Payments, orders are updated using APC or Callback.
-*  Version: 3.0
+*  Version: 3.0.1
 *  License: GPL2
 */
 
@@ -63,6 +63,7 @@ class nochex extends ModulePayment {
         $this->online = true;
 		
 		$this->merchantid = MODULE_PAYMENT_NOCHEX_MERCHANTID;
+		$this->test_mode = MODULE_PAYMENT_NOCHEX_TESTMODE;
 		
 		$this->api_url = "https://secure.nochex.com";
 		
@@ -110,11 +111,20 @@ class nochex extends ModulePayment {
 
 	function _start_transaction() {
 
+	
+            $this->_save_order();
+
             /** @var \common\classes\Currencies $currencies */
             $currencies = \Yii::$container->get('currencies');
             /** @var OrderAbstract $order */
             $order = $this->manager->getOrderInstance(); 
-
+			
+			if ($this->test_mode == "True"){
+				$testModeEnabled = "<input type=\"hidden\" name=\"test_transaction\" value=\"100\" />";
+			} else {
+				$testModeEnabled = "";
+			}
+			
             $amount = number_format(($order->info['total']) * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);	
 			$postage = number_format($order->info['shipping_cost'] * $currencies->currencies['GBP']['value'], $currencies->currencies['GBP']['decimal_places']);
 		
@@ -163,7 +173,8 @@ class nochex extends ModulePayment {
 				<input type="hidden" name="delivery_postcode" value="'.$delivery_postcode.'" />				
 				<input type="hidden" name="email_address" value="'.$order->customer['email_address'].'" />				
 				<input type="hidden" name="customer_phone_number" value="'.$billing_phoneNumber.'" />
-				<input type="hidden" name="optional_2" value="Enabled" />
+				<input type="hidden" name="optional_2" value="Enabled" />'.$testModeEnabled.'
+				<input type="hidden" name="test_success_url" value="'.tep_href_link('callback/webhooks.payment.' . $this->code, 'action=success&orders_id=' . $this->order_id, 'SSL').'" />
 				<input type="hidden" name="success_url" value="'.tep_href_link('callback/webhooks.payment.' . $this->code, 'action=success&orders_id=' . $this->order_id, 'SSL').'" />
 				<input type="hidden" name="callback_url" value="'.tep_href_link('callback/webhooks.payment.' . $this->code, 'action=callback&orders_id=' . $this->order_id, 'SSL').'" />	
 				<input type="submit" class="button-alt" id="submit_nochex_payment_form" value="Pay via Nochex" /> 				
@@ -244,9 +255,11 @@ class nochex extends ModulePayment {
                             'comments' => $Msg,
                             'customer_notified' => 0,
                         ]);	
+						
+					$order->update_piad_information(true);
+                    $order->save_details();
 					
-				} 
-				else { 
+				} else { 
 					
 					$Msg = "Callback: " . $response . "\r\n";			
 					$Msg .= "Transaction Status: " . $testStatus . "\r\n";			
@@ -259,20 +272,37 @@ class nochex extends ModulePayment {
                             'comments' => $Msg,
                             'customer_notified' => 1,
                         ]);	 
+						
+					$order->update_piad_information(true);
+                    $order->save_details();
+                    $order->notify_customer($order->getProductsHtmlForEmail(), []);
+
 				}
+				
+					$tManager = $this->manager->getTransactionManager($this);
+                    $invoice_id = $this->manager->getOrderSplitter()->getInvoiceId();
+					
+					$ret = $tManager->updatePaymentTransaction($_POST['order_id'], [
+                        'fulljson' => json_encode($postvars),
+                        'status_code' => $statusCode,
+                        'status' => $output . " / Paid",
+                        'amount' => (float) $_POST['amount'],
+                        'comments' => $msg,
+                        'date' => date('Y-m-d H:i:s'),
+                        'suborder_id' => $_POST['transaction_id'],
+                        'orders_id' => $_POST['order_id']
+                    ]);
+
 				}
 		
 				
 			} else {
 				
-				if ($amount <> $_POST['amount']) {
-				
+				if ($amount <> $_POST['amount']) {				
 						\common\helpers\Order::setStatus($_POST['order_id'], (int)5, [
                             'comments' => "Amount Mismatch! Paid amount " . $_POST['amount'] . "is not the same as the Ordered amount " . $amount,
                             'customer_notified' => 0,
-                        ]);	
-				
-				
+                        ]);									
 				} else {
 
 				// Set parameters for the email
@@ -306,19 +336,38 @@ class nochex extends ModulePayment {
                             'comments' => $msg,
                             'customer_notified' => 0,
                         ]);		
-					
+					$order->update_piad_information(true);
+                    $order->save_details();
+                    $order->notify_customer($order->getProductsHtmlForEmail(), []);
+
 				} 
 				else { 
-					$msg = "APC was AUTHORISED.\r\n\r\n$debug"; // if AUTHORISED was found in the response then it was successful
+					$msg = "APC was AUTHORISED."; // if AUTHORISED was found in the response then it was successful
 					// whatever else you want to do 
 					$order_status = $this->order_status;
                         \common\helpers\Order::setStatus($_POST['order_id'], (int)$order_status, [
                             'comments' => $msg,
                             'customer_notified' => 1,
                         ]);	 
-					
+					$order->update_piad_information(true);
+                    $order->save_details();
 				}
 				
+				    $tManager = $this->manager->getTransactionManager($this);
+                    $invoice_id = $this->manager->getOrderSplitter()->getInvoiceId();
+					
+					$ret = $tManager->updatePaymentTransaction($_POST['order_id'], [
+                        'fulljson' => json_encode($postvars),
+                        'status_code' => $statusCode,
+                        'status' => $output . " / Paid",
+                        'amount' => (float) $_POST['amount'],
+                        'comments' => $msg,
+                        'date' => date('Y-m-d H:i:s'),
+                        'suborder_id' => $_POST['transaction_id'],
+                        'orders_id' => $_POST['order_id']
+                    ]);
+
+					
 				}
 			}
 			}
