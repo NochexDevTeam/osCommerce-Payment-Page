@@ -13,6 +13,11 @@ Visit our Knowledgebase for support: https://support.nochex.com/
 Changelog
 =====================
 
+= 3.0.1 =
+
+  - Updated APC / Callback functions in relation to order information
+  - Reviewed Test Mode functionality
+
 = 3.0 =
 
   - Module updated in relation to the latest version of osCommerce
